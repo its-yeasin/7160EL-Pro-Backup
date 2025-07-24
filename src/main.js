@@ -7,6 +7,7 @@ const { createWindow } = require('./utils/createWindow')
 const { migrateDataDirectory } = require('./utils/DataMigration')
 // const { showNotification } = require('./Models/Notification/Notification')
 const path = require('path')
+const { evSendDownloadProgress } = require('./Models/Tasks/Ev')
 const envPath = app.isPackaged 
 ? path.join(process.resourcesPath, '.env')
 : path.join(__dirname, '..', '.env');
