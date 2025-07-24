@@ -24,13 +24,13 @@ if (app.isPackaged) {
   autoUpdater.logger.transports.file.level = 'info';
   autoUpdater.autoDownload = false; // Don't auto-download, let user choose
   
-  // Set a custom server URL if needed (uncomment and modify if using custom update server)
-  // autoUpdater.setFeedURL({
-  //   provider: 'github',
-  //   owner: 'bikirandev',
-  //   repo: '7160EL-Pro-Backup',
-  //   private: false
-  // });
+  // Configure for GitHub releases
+  autoUpdater.setFeedURL({
+    provider: 'github',
+    owner: 'its-yeasin',
+    repo: '7160EL-Pro-Backup',
+    private: false
+  });
 }
 
 let tray = null
@@ -171,18 +171,27 @@ autoUpdater.on("update-downloaded", () => {
 autoUpdater.on("error", (info) => {
   console.error('Auto-updater error:', info);
   
-  // Only show error dialog if it's not a 404 (no releases found)
-  if (!info.message || !info.message.includes('404')) {
+  // Handle specific errors
+  if (info && info.message) {
+    if (info.message.includes('404')) {
+      console.log('No releases found - auto-updater disabled');
+      return;
+    }
+    if (info.message.includes('ZIP file not provided')) {
+      console.log('ZIP file issue - check build configuration for target platforms');
+      return;
+    }
+  }
+  
+  // Show error dialog for other errors
+  if (win) {
     dialog.showMessageBox(win, {
-      type: 'error',
-      title: 'Update Error',
-      message: 'An error occurred while checking for updates',
-      detail: `Error: ${info}`,
+      type: 'warning',
+      title: 'Update Check',
+      message: 'Unable to check for updates',
+      detail: 'Please check your internet connection and try again later.',
       buttons: ['OK']
     });
-  } else {
-    // For 404 errors (no releases), just log silently
-    console.log('No releases found - auto-updater disabled');
   }
 });
 
