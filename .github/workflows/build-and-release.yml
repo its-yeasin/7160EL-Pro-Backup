@@ -37,6 +37,13 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build React frontend
+        run: |
+          echo "Building React frontend..."
+          yarn build
+          echo "React build completed. Checking build folder:"
+          ls -la build/ || echo "Build folder not found - this will cause Electron build to fail"
+
       - name: Create missing directories and files
         run: |
           # Create directories if they don't exist
