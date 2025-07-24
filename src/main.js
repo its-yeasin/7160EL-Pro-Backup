@@ -120,6 +120,67 @@ app.on('ready', () => {
   // Menu.setApplicationMenu(menu)
 })
 
+// Auto-updater events
+autoUpdater.on('checking-for-update', () => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send('update-status', { 
+      type: 'checking', 
+      message: 'Checking for updates...' 
+    })
+  }
+})
+
+autoUpdater.on('update-available', (info) => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send('update-status', { 
+      type: 'available', 
+      message: 'Update available. Downloading...', 
+      version: info.version 
+    })
+  }
+})
+
+autoUpdater.on('update-not-available', (info) => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send('update-status', { 
+      type: 'not-available', 
+      message: 'App is up to date.' 
+    })
+  }
+})
+
+autoUpdater.on('error', (err) => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send('update-status', { 
+      type: 'error', 
+      message: 'Error in auto-updater: ' + err 
+    })
+  }
+})
+
+autoUpdater.on('download-progress', (progressObj) => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send('download-progress', {
+      percent: Math.round(progressObj.percent),
+      transferred: progressObj.transferred,
+      total: progressObj.total,
+      bytesPerSecond: progressObj.bytesPerSecond
+    })
+  }
+})
+
+autoUpdater.on('update-downloaded', (info) => {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send('update-status', { 
+      type: 'downloaded', 
+      message: 'Update downloaded. Will install on restart.', 
+      version: info.version 
+    })
+  }
+  // Optionally auto-restart
+  // autoUpdater.quitAndInstall()
+})
+
 /*New Update Available*/
 autoUpdater.on("update-available", () => {
   dialog.showMessageBox(win, {

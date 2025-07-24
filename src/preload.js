@@ -16,6 +16,14 @@ if (electron && electron.ipcRenderer) {
   // Message Sender
   obj.messageOn = (id, fn) => ipcRenderer.on(id, fn)
   obj.messageOff = (id) => ipcRenderer.removeAllListeners(id)
+  
+  // Download Progress Handler
+  obj.onDownloadProgress = (callback) => ipcRenderer.on('download-progress', callback)
+  obj.offDownloadProgress = () => ipcRenderer.removeAllListeners('download-progress')
+  
+  // Update Status Handler
+  obj.onUpdateStatus = (callback) => ipcRenderer.on('update-status', callback)
+  obj.offUpdateStatus = () => ipcRenderer.removeAllListeners('update-status')
 
   contextBridge.exposeInMainWorld('electronAPI', obj)
 } else {
