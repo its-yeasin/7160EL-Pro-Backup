@@ -5,7 +5,7 @@
     "email": "info@bikiran.com"
   },
   "description": "This APP is built by Bikiran",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "private": true,
   "homepage": "./",
   "main": "src/main.js",
