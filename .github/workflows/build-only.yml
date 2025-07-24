@@ -1,0 +1,97 @@
+name: Build Only (No Release)
+
+on:
+  workflow_dispatch: # Manual trigger only
+    inputs:
+      build_version:
+        description: 'Version to build (leave empty for package.json version)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.17.1'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create missing directories and files
+        run: |
+          # Create directories if they don't exist
+          mkdir -p build
+          mkdir -p Logs
+          mkdir -p Data
+          
+          # Ensure .env exists (it should already exist)
+          if [ ! -f .env ]; then
+            echo "# Environment variables for Pro Backup" > .env
+          fi
+          
+          # Add placeholder files to ensure directories are not empty
+          if [ ! -f build/.gitkeep ]; then
+            echo "# Build artifacts directory" > build/.gitkeep
+          fi
+          
+          if [ ! -f Logs/.gitkeep ]; then
+            echo "# Application logs directory" > Logs/.gitkeep
+          fi
+
+      - name: Get package version
+        id: package-version
+        run: |
+          VERSION="${{ github.event.inputs.build_version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Build application for macOS
+        run: yarn build:mac:local
+
+      - name: List dist directory
+        run: |
+          echo "📁 Build artifacts:"
+          ls -la dist/
+          echo ""
+          echo "📊 File sizes:"
+          du -sh dist/* | sort -hr
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pro-backup-macos-v${{ steps.package-version.outputs.version }}
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/latest-mac.yml
+          retention-days: 30
+
+      - name: Build Summary
+        run: |
+          echo "## 🎉 Build Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Generated Files:" >> $GITHUB_STEP_SUMMARY
+          echo "- Pro Backup-${{ steps.package-version.outputs.version }}.dmg (Intel Mac)" >> $GITHUB_STEP_SUMMARY
+          echo "- Pro Backup-${{ steps.package-version.outputs.version }}-arm64.dmg (Apple Silicon Mac)" >> $GITHUB_STEP_SUMMARY
+          echo "- Pro Backup-${{ steps.package-version.outputs.version }}-mac.zip (Intel Auto-updater)" >> $GITHUB_STEP_SUMMARY
+          echo "- Pro Backup-${{ steps.package-version.outputs.version }}-arm64-mac.zip (Apple Silicon Auto-updater)" >> $GITHUB_STEP_SUMMARY
+          echo "- latest-mac.yml (Auto-updater metadata)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📥 Download:" >> $GITHUB_STEP_SUMMARY
+          echo "Go to the [Actions artifacts](../actions) to download the build files." >> $GITHUB_STEP_SUMMARY
