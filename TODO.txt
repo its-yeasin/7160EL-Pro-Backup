@@ -1,0 +1,67 @@
+Done List:
+- Log upload to remote - Done.
+- All log page operation on frontend.
+- Config Page Operation/waring/confirmation to be functional.
+- Error - Directory Explore not works on MACOS.
+- Show Number of Backups & Size on Backup List Page.
+- Show Last Backup time with source & destination.
+- explore on template message.
+- Show error message with each source.
+- Re-check messages and add button on message, like explore folder.
+- PgSQL & MySQL feature should be added.
+- Source Add Operation Modify
+- Backup List - Sync Backup Not Completed
+- Email Notification Configuration
+- Do not keep password on exporting file
+- Destination Manage Page
+- Dump File Configuration
+-  *Local Directory 	    --✅WORKING
+-  *Mysql 	            --✅WORKING
+-  *Pgsql 	            --❌NOT WORKING
+-  *Mssql 	            --✅TEST
+-  *Mysql (Win Auth) 	    --✅TEST
+- PgSQL & MySQL feature should be added.
+- Facebook Pixel & Google Analytics Setup
+- Marketing Materials for Facebook and LinkedIn
+
+
+Pending List (Fahim):
+- Contact Us & About Us Page, feature request design to be completed.
+- User Manual to be created.
+- Browse Upload Files
+- 3.Sync Backups With Cloud   --❌NEED TO BE DONE
+
+Pending List (Bishojit):
+- Email Notification Setup Page.
+- Pin-Code Service.
+- To Fix - File Copy Issue.
+- Show Progresses on Backup.
+- Browse Cloud Files
+- Organize Execute Options.
+// 3. Firebase Setup
+- Re-check all success/error log create point.
+- Data Encryption (Optional).
+- 4.Login System              --❌NEED TO BE DONE
+- Destinations Add/Update/Operations.
+- FTP Cloud Destination Should be added.
+
+New Options:
+- License Validation
+- Online License Purchase Option
+- Online Storage Purchase Option
+- Dashboard - Show Usage
+- 2.Destination               --❌NEED TO BE DONE
+
+// 1. Elite Backup/Ultra Backup Application Should be created
+// 2. Login Service
+
+// 1. Website Development - Done
+// 2. Portal Development
+// 3. Remote Controls
+
+// 2. Facebook Page Product Setup
+// 3. LinkedIn Page Product Setup
+// 4. Google Adwords Setup
+
+"C:\Program Files\PostgreSQL\15\bin\pg_dump.exe" -U postgres -h localhost -d miracleapi -p 5432 > C:\Backups\pgsql_miracleapi_20240414_155300.bak
+"C:\Program Files\PostgreSQL\15\bin\pg_dump.exe" -U postgres -h localhost -d miracleapi -p 5432 > C:\Backups\pgsql_miracleapi_20240414_155300.bak

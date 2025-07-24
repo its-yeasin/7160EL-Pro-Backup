@@ -1,0 +1,145 @@
+{
+  "name": "pro-backup",
+  "author": {
+    "name": "Bikiran",
+    "email": "info@bikiran.com"
+  },
+  "description": "This APP is built by Bikiran",
+  "version": "1.1.1",
+  "private": true,
+  "homepage": "./",
+  "main": "src/main.js",
+  "publisher": "Bikiran",
+  "license": "CC0-1.0",
+  "scripts": {
+    "start": "electron  --trace-warnings .",
+    "electron": "electron  --trace-warnings .",
+    "electron:start": "electron-forge start",
+    "electron:package": "electron-forge package",
+    "electron:make": "electron-forge make",
+    "build": "electron-builder",
+    "build:windows": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder --win --mac --linux",
+    "publish": "electron-builder --publish=always",
+    "publish:windows": "electron-builder --win --publish=always",
+    "publish:mac": "electron-builder --mac --publish=always",
+    "publish:linux": "electron-builder --linux --publish=always",
+    "publish:all": "electron-builder --win --mac --linux --publish=always"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/its-yeasin/7160EL-Pro-Backup"
+  },
+  "build": {
+    "productName": "Pro Backup",
+    "appId": "com.bikiran.probackup",
+    "publish": {
+      "provider": "github",
+      "owner": "its-yeasin",
+      "repo": "7160EL-Pro-Backup"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "highestAvailable",
+      "icon": "./src/assets/backup-pro-logo.png"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "./src/assets/backup-pro-logo.png"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "./src/assets/backup-pro-logo.png"
+    },
+    "extraResources": [
+      {
+        "from": ".env",
+        "to": "./.env"
+      },
+      {
+        "from": "build",
+        "to": "./build",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "Data",
+        "to": "./Data",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "Logs",
+        "to": "./Logs",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.11.2",
+    "cron-parser": "^4.9.0",
+    "dotenv": "^17.2.0",
+    "electron-log": "^5.4.1",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-updater": "^6.6.2",
+    "electron-window-state": "^5.0.3",
+    "firebase": "^12.0.0",
+    "moment": "^2.30.1",
+    "mssql": "^11.0.1",
+    "ncp": "^2.0.0",
+    "nodemailer": "^7.0.5",
+    "nodemailer-plugin-inline-base64": "^2.1.1",
+    "pouchdb": "^9.0.0",
+    "progress-stream": "^2.0.0",
+    "tar": "^7.4.3"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/publisher-github": "^7.8.1",
+    "electron": "^31.1.0",
+    "electron-builder": "^24.13.3",
+    "electron-builder-squirrel-windows": "25.0.0-alpha.6",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.2.5"
+  }
+}

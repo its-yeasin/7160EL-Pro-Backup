@@ -1,0 +1,33 @@
+https://chat.openai.com/c/9a75048a-ae97-4d70-abb4-c6af4f7e84b1
+
+C:\Users\bikir>openssl req -newkey rsa:2048 -nodes -keyout key.pem -out csr.pem
+...+.......+........+......................+.....+.+..+.+.........+...+........+......+.+...+..+++++++++++++++++++++++++++++++++++++++*.........+...+.+++++++++++++++++++++++++++++++++++++++*......+......+.......+..+....+..+.......+..+....+..+...+....+...+.....+....+...+...+..............+....+..+...+...................+...+............+..+...+.+......+.....+...+.+......+........+.......+.....+...+.+.....+..........+............+..+...+.......+..+......+..........+.........+...+..+....+............+...+.....+....+..+....++++++
+...+..............+.+++++++++++++++++++++++++++++++++++++++*.+........+.......+......+......+...+.....+......+++++++++++++++++++++++++++++++++++++++*...+...+...+...+.....+......+...+.+..+.........+.+........+.......+........+.........+..........+...........+............+...+......+...............+.+............++++++
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:BD
+State or Province Name (full name) [Some-State]:Dhaka
+Locality Name (eg, city) []:Dhaka
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Bikiran
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:
+Email Address []:info@bikiran.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:110216
+An optional company name []:
+
+
+
+C:\Users\bikir>openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out server.crt
+Certificate request self-signature ok
+subject=C=BD, ST=Dhaka, L=Dhaka, O=Bikiran, emailAddress=info@bikiran.com
+
+
