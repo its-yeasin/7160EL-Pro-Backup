@@ -41,13 +41,6 @@ app.on('ready', () => {
   // Migrate data directory on first startup
   migrateDataDirectory()
 
-  setInterval(() => {
-    evSendDownloadProgress('download', {
-      percent: 50, // Example value
-      status: 'downloading' // Example status
-    })
-  }, 1000); // for one second interval
-
   const iconPath = path.join(__dirname, 'assets', 'backup-pro-logo.png')
 
   // Create and display a tray icon
@@ -167,6 +160,15 @@ autoUpdater.on('error', (err) => {
 })
 
 autoUpdater.on('download-progress', (progressObj) => {
+  // Send real download progress using evSendDownloadProgress
+  evSendDownloadProgress('download', {
+    percent: Math.round(progressObj.percent),
+    transferred: progressObj.transferred,
+    total: progressObj.total,
+    bytesPerSecond: progressObj.bytesPerSecond,
+    status: 'downloading'
+  })
+
   if (win && !win.isDestroyed()) {
     win.webContents.send('download-progress', {
       percent: Math.round(progressObj.percent),
@@ -191,6 +193,12 @@ autoUpdater.on('update-downloaded', (info) => {
 
 /*New Update Available*/
 autoUpdater.on("update-available", () => {
+  // Send initial download status
+  evSendDownloadProgress('download', {
+    percent: 0,
+    status: 'starting'
+  })
+
   dialog.showMessageBox(win, {
     type: 'info',
     title: 'Update Available',
@@ -222,6 +230,12 @@ autoUpdater.on("update-not-available", () => {
 
 /*Download Completion Message*/
 autoUpdater.on("update-downloaded", () => {
+  // Send completion status
+  evSendDownloadProgress('download', {
+    percent: 100,
+    status: 'completed'
+  })
+
   dialog.showMessageBox(win, {
     type: 'info',
     title: 'Update Ready',
@@ -238,6 +252,13 @@ autoUpdater.on("update-downloaded", () => {
 });
 
 autoUpdater.on("error", (info) => {
+  // Send error status
+  evSendDownloadProgress('download', {
+    percent: 0,
+    status: 'error',
+    error: info
+  })
+
   console.error('Auto-updater error:', info);
   
   // Handle specific errors
