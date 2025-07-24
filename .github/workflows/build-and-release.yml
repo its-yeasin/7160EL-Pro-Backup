@@ -60,7 +60,7 @@ jobs:
         shell: bash
 
       - name: Build application for macOS
-        run: yarn build:mac
+        run: yarn build:mac:local
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

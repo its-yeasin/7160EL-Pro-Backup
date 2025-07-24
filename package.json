@@ -22,6 +22,7 @@
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux",
     "build:all": "electron-builder --win --mac --linux",
+    "build:mac:local": "electron-builder --mac --publish=never",
     "publish": "electron-builder --publish=always",
     "publish:windows": "electron-builder --win --publish=always",
     "publish:mac": "electron-builder --mac --publish=always",
@@ -29,6 +30,7 @@
     "publish:all": "electron-builder --win --mac --linux --publish=always",
     "release:prepare": "./scripts/prepare-release.sh",
     "release:check": "npm run build:all --dry-run",
+    "release:verify": "./scripts/verify-build.sh",
     "version:check": "node -p \"require('./package.json').version\""
   },
   "repository": {
