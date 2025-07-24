@@ -40,6 +40,13 @@ app.on('ready', () => {
   // Migrate data directory on first startup
   migrateDataDirectory()
 
+  setInterval(() => {
+    evSendDownloadProgress('download', {
+      percent: 50, // Example value
+      status: 'downloading' // Example status
+    })
+  }, 1000); // for one second interval
+
   const iconPath = path.join(__dirname, 'assets', 'backup-pro-logo.png')
 
   // Create and display a tray icon
