@@ -5,7 +5,7 @@
     "email": "info@bikiran.com"
   },
   "description": "This APP is built by Bikiran",
-  "version": "1.1.19",
+  "version": "1.1.20",
   "private": true,
   "homepage": "./",
   "main": "src/main.js",
@@ -57,25 +57,15 @@
       "requestedExecutionLevel": "highestAvailable",
       "icon": "./src/assets/backup-pro-logo.png"
     },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "./src/assets/backup-pro-logo.png"
-    },
+ "mac": {
+  "target": [
+    {
+      "target": "zip",
+      "arch": ["x64", "arm64"]
+    }
+  ],
+  "icon": "./src/assets/backup-pro-logo.png"
+},
     "linux": {
       "target": [
         {
