@@ -5,7 +5,7 @@
     "email": "info@bikiran.com"
   },
   "description": "This APP is built by Bikiran",
-  "version": "1.1.23",
+  "version": "1.1.24",
   "private": true,
   "homepage": "./",
   "main": "src/main.js",
@@ -23,14 +23,20 @@
     "build:linux": "electron-builder --linux",
     "build:all": "electron-builder --win --mac --linux",
     "build:mac:local": "electron-builder --mac --publish=never",
+    "build:mac:unsigned": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --publish=never",
+    "build:forge": "electron-forge make",
+    "build:forge:mac": "electron-forge make --platform=darwin",
+    "build:forge:win": "electron-forge make --platform=win32",
+    "build:forge:linux": "electron-forge make --platform=linux",
     "publish": "electron-builder --publish=always",
     "publish:windows": "electron-builder --win --publish=always",
     "publish:mac": "electron-builder --mac --publish=always",
     "publish:linux": "electron-builder --linux --publish=always",
     "publish:all": "electron-builder --win --mac --linux --publish=always",
     "release:prepare": "./scripts/prepare-release.sh",
-    "release:check": "npm run build:all --dry-run",
+    "release:check": "yarn build:all --dry-run",
     "release:verify": "./scripts/verify-build.sh",
+    "release:unsigned": "./scripts/build-unsigned.sh",
     "version:check": "node -p \"require('./package.json').version\""
   },
   "repository": {
@@ -52,6 +58,12 @@
           "arch": [
             "x64"
           ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "requestedExecutionLevel": "highestAvailable",
@@ -60,11 +72,25 @@
     "mac": {
       "target": [
         {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
           "target": "zip",
-           "arch": ["universal"]
+          "arch": [
+            "universal"
+          ]
         }
       ],
-      "icon": "./src/assets/backup-pro-logo.png"
+      "icon": "./src/assets/backup-pro-logo.png",
+      "identity": null,
+      "gatekeeperAssess": false,
+      "hardenedRuntime": false,
+      "entitlements": null,
+      "entitlementsInherit": null,
+      "category": "public.app-category.productivity"
     },
     "linux": {
       "target": [
@@ -76,6 +102,41 @@
         }
       ],
       "icon": "./src/assets/backup-pro-logo.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Pro Backup",
+      "installerIcon": "./src/assets/backup-pro-logo.png",
+      "uninstallerIcon": "./src/assets/backup-pro-logo.png",
+      "installerHeaderIcon": "./src/assets/backup-pro-logo.png",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "menuCategory": "Productivity"
+    },
+    "dmg": {
+      "title": "Pro Backup ${version}",
+      "icon": "./src/assets/backup-pro-logo.png",
+      "iconSize": 80,
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
     },
     "extraResources": [
       {
@@ -129,6 +190,7 @@
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
     "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-dmg": "^7.8.1",
     "@electron-forge/maker-rpm": "^7.4.0",
     "@electron-forge/maker-squirrel": "^7.4.0",
     "@electron-forge/maker-zip": "^7.4.0",

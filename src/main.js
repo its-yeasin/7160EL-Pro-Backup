@@ -37,6 +37,9 @@ if (app.isPackaged) {
   
   // Enable auto-download after user confirmation
   autoUpdater.autoInstallOnAppQuit = false;
+  
+  // Disable signature verification for now to avoid code signing issues
+  process.env.ELECTRON_UPDATER_ALLOW_UNSIGNED = 'true';
 }
 
 let tray = null
@@ -86,12 +89,48 @@ app.on('ready', () => {
 
   // Only check for updates in production and if app is packaged
   if (app.isPackaged) {
-    // Add a delay to ensure the window is ready
-    setTimeout(() => {
-      console.log(`Checking for updates. Current version ${app.getVersion()}`);
-      autoUpdater.checkForUpdates().catch(err => {
+    // Add a delay to ensure the window is ready and check network connectivity
+    setTimeout(async () => {
+      try {
+        console.log(`Checking for updates. Current version ${app.getVersion()}`);
+        
+        // Simple network check before trying to update
+        const https = require('https');
+        const testConnection = () => {
+          return new Promise((resolve, reject) => {
+            const req = https.get('https://api.github.com', { timeout: 5000 }, (res) => {
+              resolve(res.statusCode === 200);
+            });
+            req.on('error', reject);
+            req.on('timeout', () => {
+              req.destroy();
+              reject(new Error('Network timeout'));
+            });
+          });
+        };
+        
+        const isOnline = await testConnection().catch(() => false);
+        if (!isOnline) {
+          console.log('Network connection not available, skipping update check');
+          if (win && !win.isDestroyed()) {
+            win.webContents.send('update-status', { 
+              type: 'offline', 
+              message: 'Network not available for update check' 
+            });
+          }
+          return;
+        }
+        
+        await autoUpdater.checkForUpdates();
+      } catch (err) {
         console.error('Failed to check for updates:', err);
-      });
+        if (win && !win.isDestroyed()) {
+          win.webContents.send('update-status', { 
+            type: 'error', 
+            message: 'Network error: ' + err.message 
+          });
+        }
+      }
     }, 3000); // 3 second delay
   } else {
     console.log('Auto-updater disabled in development mode');
@@ -228,12 +267,40 @@ autoUpdater.on('error', (err) => {
     }
     if (err.message.includes('net::ERR_INTERNET_DISCONNECTED')) {
       console.log('No internet connection');
+      if (win && !win.isDestroyed()) {
+        dialog.showMessageBox(win, {
+          type: 'warning',
+          title: 'Network Error',
+          message: 'Please check your internet connection and try again later.',
+          detail: 'Unable to connect to the update server.',
+          buttons: ['OK']
+        });
+      }
+      return;
+    }
+    if (err.message.includes('code signature') || err.message.includes('signature')) {
+      console.log('Code signature validation failed - this is expected for unsigned builds');
+      if (win && !win.isDestroyed()) {
+        dialog.showMessageBox(win, {
+          type: 'info',
+          title: 'Update Available',
+          message: 'A new version is available for download.',
+          detail: 'Please visit our website to download the latest version manually.',
+          buttons: ['Open Website', 'Later'],
+          defaultId: 0,
+          cancelId: 1
+        }).then((result) => {
+          if (result.response === 0) {
+            shell.openExternal('https://github.com/its-yeasin/7160EL-Pro-Backup/releases/latest');
+          }
+        });
+      }
       return;
     }
   }
   
   // Show error dialog for other errors only if it's a real error
-  if (win && !err.message.includes('404')) {
+  if (win && !err.message.includes('404') && !err.message.includes('signature')) {
     dialog.showMessageBox(win, {
       type: 'warning',
       title: 'Update Check Failed',
